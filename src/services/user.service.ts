@@ -14,10 +14,10 @@ export class UserService {
         if(emailCheck){
             throw new HttpError(403, "Email already in use");
         }
-        const usernameCheck = await userRepository.getUserByUsername(data.username);
-        if(usernameCheck){
-            throw new HttpError(403, "Username already in use");
-        }
+        // const usernameCheck = await userRepository.getUserByUsername(data.username);
+        // if(usernameCheck){
+        //     throw new HttpError(403, "Username already in use");
+        // }
         // hash password
         const hashedPassword = await bcryptjs.hash(data.password, 10); // 10 - complexity
         data.password = hashedPassword;
@@ -43,8 +43,7 @@ export class UserService {
             id: user._id,
             email: user.email,
             username: user.username,
-            firstName: user.firstName,
-            lastName: user.lastName,
+            fullName: user.fullName,
             role: user.role
         }
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' }); // 30 days
