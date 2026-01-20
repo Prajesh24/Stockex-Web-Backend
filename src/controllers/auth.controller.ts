@@ -6,6 +6,7 @@ let userService = new UserService();
 export class AuthController {
     async register(req: Request, res: Response) {
         try {
+            console.log(req.body)
             const parsedData = CreateUserDTO.safeParse(req.body); 
             if (!parsedData.success) { // validation failed
                 return res.status(400).json(

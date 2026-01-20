@@ -42,7 +42,7 @@ export class UserService {
         const payload = { // user identifier
             id: user._id,
             email: user.email,
-            username: user.username,
+            // username: user.username,
             fullName: user.fullName,
             role: user.role
         }
