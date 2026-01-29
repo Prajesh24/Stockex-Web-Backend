@@ -4,11 +4,12 @@ import  bcryptjs from "bcryptjs"
 import { HttpError } from "../errors/http-error";
 import jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../config";
+import { IUser } from "../models/user.model";
 
 let userRepository = new UserRepository();
 
 export class UserService {
-    async createUser(data: CreateUserDTO){
+    async createUser(data: CreateUserDTO | any){
         // business logic before creating user
         const emailCheck = await userRepository.getUserByEmail(data.email);
         if(emailCheck){
@@ -48,5 +49,34 @@ export class UserService {
         }
         const token = jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' }); // 30 days
         return { token, user }
+    }
+
+    async getUserById(id: string): Promise<IUser | null> {
+        return await userRepository.getUserById(id);
+    }
+
+    async getAllUsers(): Promise<IUser[]> {
+        return await userRepository.getAllUsers();
+    }
+
+    async updateUser(id: string, updateData: Partial<IUser>): Promise<IUser | null> {
+        // If password is being updated, hash it
+        if (updateData.password) {
+            updateData.password = await bcryptjs.hash(updateData.password, 10);
+        }
+        
+        // Check if email is being updated and if it's already in use
+        if (updateData.email) {
+            const existingUser = await userRepository.getUserByEmail(updateData.email);
+            if (existingUser && existingUser._id.toString() !== id) {
+                throw new HttpError(403, "Email already in use");
+            }
+        }
+
+        return await userRepository.updateUser(id, updateData);
+    }
+
+    async deleteUser(id: string): Promise<boolean> {
+        return await userRepository.deleteUser(id);
     }
 }
