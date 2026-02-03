@@ -1,13 +1,22 @@
 import { Router } from "express";
 import { AuthController } from "../controllers/auth.controller";
-import { authorizedMiddleware } from "../middlewears/middlewear";
-import { uploadSingle } from "../config/multer.config";
-
+import { authorizedMiddleware } from "../middlewears/authorized.middlewear";
+import { uploads } from "../middlewears/upload.middlewear";
 let authController = new AuthController();
 const router = Router();
 
 router.post("/register", authController.register)
 router.post("/login", authController.login)
-router.put("/:id", authorizedMiddleware, uploadSingle.single('image'), authController.updateProfile)
+// add remaning routes like login, logout, etc.
+
+
+router.get("/whoami", authorizedMiddleware, authController.getProfile);
+
+router.put(
+    "/update-profile",
+    authorizedMiddleware,
+    uploads.single("image"), // "image" - field name from frontend/client
+    authController.updateProfile
+)
 
 export default router;
