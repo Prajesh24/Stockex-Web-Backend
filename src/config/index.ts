@@ -8,5 +8,15 @@ export const MONGODB_URI: string =
 // Application level constants, with fallbacks 
 // if .env variables are not set
 
+
 export const JWT_SECRET: string = 
     process.env.JWT_SECRET || 'default'
+
+export const CLIENT_URL: string =
+    process.env.CLIENT_URL || 'http://localhost:3000';
+   
+export const EMAIL_USER: string =
+    process.env.EMAIL_USER || 'meroemail.com'
+
+export const EMAIL_PASS: string =
+    process.env.EMAIL_PASS || 'password';

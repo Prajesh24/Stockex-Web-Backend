@@ -96,5 +96,74 @@ export class AuthController {
         }
     }
 
+//     async requestPasswordChange(req: Request, res: Response) {
+//     try {
+//       const { email } = req.body;
+//       const user = await userService.sendResetPasswordEmail(email);
+//       return res
+//         .status(200)
+//         .json({
+//           success: true,
+//           data: user,
+//           message: "Password reset email sent",
+//         });
+//     } catch (error: Error | any) {
+//       return res
+//         .status(error.statusCode || 500)
+//         .json({
+//           success: false,
+//           message: error.message || "Internal Server Error",
+//         });
+//     }
+//   }
+
+    async sendResetPasswordEmail(req: Request, res: Response) {
+    try {
+        const { email } = req.body;
+
+        if (!email) {
+            return res.status(400).json({
+                success: false,
+                message: "Email is required"
+            });
+        }
+
+        // Call service (it will silently skip if user doesn't exist)
+        await userService.sendResetPasswordEmail(email);
+
+        // Always return the same message
+        return res.status(200).json({
+            success: true,
+            message: "If the email is registered, a reset link has been sent."
+        });
+
+    } catch (error: any) {
+        // Log real errors (email server down, DB issue, etc.)
+        console.error("Password reset request error:", error);
+
+        // Still return neutral success to frontend (UX + security)
+        return res.status(200).json({
+            success: true,
+            message: "If the email is registered, a reset link has been sent."
+        });
+    }
+}
+
+    async resetPassword(req: Request, res: Response) {
+        try {
+
+           const token = req.params.token;
+            const { newPassword } = req.body;
+            await userService.resetPassword(token, newPassword);
+            return res.status(200).json(
+                { success: true, message: "Password has been reset successfully." }
+            );
+        } catch (error: Error | any) {
+            return res.status(error.statusCode ?? 500).json(
+                { success: false, message: error.message || "Internal Server Error" }
+            );
+        }
+    }
+
  
 }

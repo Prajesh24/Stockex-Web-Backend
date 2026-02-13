@@ -3,7 +3,7 @@ import { UserSchema } from "../types/user.type";
 // re-use UserSchema from types
 export const CreateUserDTO = UserSchema.pick(
     {
-        fullName: true,
+        name: true,
         email: true,
         password: true,
         imageUrl:true

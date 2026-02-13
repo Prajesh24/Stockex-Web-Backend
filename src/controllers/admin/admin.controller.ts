@@ -2,11 +2,14 @@ import { CreateUserDTO, LoginUserDTO, UpdateUserDTO } from "../../dtos/user.dto"
 import { Request, Response, NextFunction } from "express";
 import z from "zod";
 import { AdminUserService } from "../../services/admin/admin.service";
+import { QueryParams } from "../../types/query.type";
 
 let adminUserService = new AdminUserService();
 
 export class AdminUserController {
     async createUser(req: Request, res: Response, next: NextFunction) {
+         console.log("CREATE USER HIT");
+         console.log(req.body);
         try {
             const parsedData = CreateUserDTO.safeParse(req.body); // validate request body
             if (!parsedData.success) { // validation failed
@@ -29,11 +32,14 @@ export class AdminUserController {
         }
     }
 
-    async getAllUsers(req: Request, res: Response, next: NextFunction) {
+     async getAllUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const users = await adminUserService.getAllUsers();
+            const { page, size, search }: QueryParams = req.query;
+            const { users, pagination } = await adminUserService.getAllUsers(
+                page, size, search
+            );
             return res.status(200).json(
-                { success: true, data: users, message: "All Users Retrieved" }
+                { success: true, data: users, pagination: pagination, message: "All Users Retrieved" }
             );
         } catch (error: Error | any) {
             return res.status(error.statusCode ?? 500).json(
