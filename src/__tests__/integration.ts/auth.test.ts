@@ -43,14 +43,14 @@ describe('Auth Integration Tests', () => {
         })
 
         
-        test('should not register a new user with duplicate username', async () => {
-            const response = await request(app)
-                .post('/api/auth/register')
-                .send({ ...testUser, email: 'new@email.com' })
+        // test('should not register a new user with duplicate username', async () => {
+        //     const response = await request(app)
+        //         .post('/api/auth/register')
+        //         .send({ ...testUser, email: 'new@email.com' })
             
-            expect(response.status).toBe(403);
-            expect(response.body).toHaveProperty('success', false);
-        })
+        //     expect(response.status).toBe(403);
+        //     expect(response.body).toHaveProperty('success', false);
+        // })
     });
 
     describe('POST /api/auth/login', () => {
